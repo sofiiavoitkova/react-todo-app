@@ -24,9 +24,11 @@ function App() {
           <FilterButton />
         </div>
         <ul className="space-y-2" ref={listHeadingRef}>
-          {filteredTasks.map((task) => (
-            <Todo key={task.id} {...task} />
-          ))}
+          {filteredTasks.length > 0 ? (
+            filteredTasks.map((task) => <Todo key={task.id} {...task} />)
+          ) : (
+            <p className="my-2 text-center text-gray-500">No tasks available</p>
+          )}
         </ul>
       </div>
     </div>
