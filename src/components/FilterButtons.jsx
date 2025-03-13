@@ -11,11 +11,11 @@ function FilterButton() {
         <button
           key={name}
           type="button"
-          className={`px-6 py-2 rounded-lg shadow-md transition ${
+          className={`px-6 py-2 rounded-lg shadow-md transition transform hover:scale-105 active:scale-95 ${
             filter === name
               ? "bg-blue-500 text-white"
               : "bg-gray-200 text-gray-700"
-          } hover:bg-gray-300`}
+          }`}
           aria-pressed={filter === name}
           onClick={() => setFilter(name)}
         >

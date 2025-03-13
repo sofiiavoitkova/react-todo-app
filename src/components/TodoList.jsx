@@ -4,8 +4,16 @@ import { TodoContext } from "../context/TodoContext.jsx";
 function Todo({ id, name, completed }) {
   const [isEditing, setEditing] = useState(false);
   const [newName, setNewName] = useState("");
-  const { toggleTaskCompleted, deleteTask, editTask } = useContext(TodoContext);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const { toggleTaskCompleted, deleteTask, updateTask } =
+    useContext(TodoContext);
   const editFieldRef = useRef(null);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setIsVisible(true), 10);
+    return () => clearTimeout(timeout);
+  }, []);
 
   useEffect(() => {
     if (isEditing && editFieldRef.current) {
@@ -16,12 +24,17 @@ function Todo({ id, name, completed }) {
   function handleSubmit(e) {
     e.preventDefault();
     if (!newName.trim()) return;
-    editTask(id, newName);
+    updateTask(id, newName);
     setNewName("");
     setEditing(false);
   }
 
-  const editingTemplate = (
+  function handleDelete() {
+    setIsDeleting(true);
+    setTimeout(() => deleteTask(id), 200);
+  }
+
+  const editTask = (
     <form className="space-y-4" onSubmit={handleSubmit}>
       <input
         type="text"
@@ -34,13 +47,13 @@ function Todo({ id, name, completed }) {
         <button
           type="button"
           onClick={() => setEditing(false)}
-          className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+          className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-all duration-300"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all duration-300"
         >
           Save
         </button>
@@ -48,8 +61,16 @@ function Todo({ id, name, completed }) {
     </form>
   );
 
-  const viewTemplate = (
-    <div className="flex justify-between items-center p-4 border-gray-200 rounded-lg shadow-sm bg-gray-100 hover:bg-gray-200">
+  const viewTask = (
+    <div
+      className={`flex justify-between items-center p-4 border-gray-200 rounded-lg shadow-sm bg-gray-100 hover:bg-gray-200 transition-all duration-300 transform ${
+        isDeleting
+          ? "opacity-0 scale-95"
+          : isVisible
+          ? "opacity-100 scale-100"
+          : "opacity-0 scale-95"
+      }`}
+    >
       <div className="flex items-center space-x-2">
         <input
           type="checkbox"
@@ -60,7 +81,7 @@ function Todo({ id, name, completed }) {
         <span
           className={`${
             completed
-              ? " decoration-2 text-gray-400 text-2xl"
+              ? "line-through text-gray-400 text-2xl"
               : "text-gray-800 text-2xl"
           } align-middle mb-1`}
         >
@@ -70,13 +91,13 @@ function Todo({ id, name, completed }) {
       <div className="flex space-x-2">
         <button
           onClick={() => setEditing(true)}
-          className="bg-gray-500 text-white px-3 py-1 rounded-lg hover:bg-gray-600"
+          className="bg-gray-500 text-white px-3 py-1 rounded-lg hover:bg-gray-600 transition-all duration-300 transform hover:scale-105"
         >
           Edit
         </button>
         <button
-          onClick={() => deleteTask(id)}
-          className="bg-gray-500 text-white px-3 py-1 rounded-lg hover:bg-gray-600"
+          onClick={handleDelete}
+          className="bg-gray-500 text-white px-3 py-1 rounded-lg hover:bg-gray-600 transition-all duration-300 transform hover:scale-105"
         >
           Delete
         </button>
@@ -84,7 +105,7 @@ function Todo({ id, name, completed }) {
     </div>
   );
 
-  return <li>{isEditing ? editingTemplate : viewTemplate}</li>;
+  return <li>{isEditing ? editTask : viewTask}</li>;
 }
 
 export default Todo;

@@ -1,7 +1,7 @@
 import { useContext, useRef, useEffect } from "react";
 import { TodoContext } from "./context/TodoContext.jsx";
 import Todo from "./components/TodoList.jsx";
-import Form from "./components/Form";
+import Form from "./components/InputForm.jsx";
 import FilterButton from "./components/FilterButtons.jsx";
 
 function App() {
